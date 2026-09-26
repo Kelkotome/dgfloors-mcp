@@ -1,0 +1,22 @@
+{
+  // DG Floors MCP server — Cloudflare Worker
+  "name": "dgfloors-mcp",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-01",
+
+  // Instant testable URL (dgfloors-mcp.<your-subdomain>.workers.dev)
+  "workers_dev": true,
+
+  // Clean branded endpoint on a DEDICATED proxied subdomain — works even though
+  // the dgfloors.com apex is not currently orange-clouded. Wrangler creates the
+  // proxied DNS record for mcp.dgfloors.com automatically. MCP endpoint =
+  // https://mcp.dgfloors.com  (also responds at /mcp).
+  "routes": [
+    { "pattern": "mcp.dgfloors.com", "custom_domain": true }
+  ],
+
+  // Usage log (tool calls + client handshakes) — see schema.sql, stats at /stats?token=…
+  "d1_databases": [
+    { "binding": "DB", "database_name": "dgfloors-mcp", "database_id": "c15ba2fc-e45b-49f8-9adc-3ad630298a58" }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "dgfloors-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DG Floors MCP server (Cloudflare Worker) — flooring cost + guides for AI assistants",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  }
+}

@@ -1,0 +1,506 @@
+{
+  "updated": "2026-09-18",
+  "national": {
+    "peel-and-stick-vinyl": {
+      "material_per_sqft": 1.19,
+      "labor_per_sqft_national": 2.13,
+      "total_per_sqft_national": 3.32
+    },
+    "luxury-vinyl-plank": {
+      "material_per_sqft": 1.46,
+      "labor_per_sqft_national": 3.19,
+      "total_per_sqft_national": 4.65
+    },
+    "laminate": {
+      "material_per_sqft": 1.4,
+      "labor_per_sqft_national": 3.19,
+      "total_per_sqft_national": 4.59
+    },
+    "engineered-hardwood": {
+      "material_per_sqft": 5.75,
+      "labor_per_sqft_national": 3.54,
+      "total_per_sqft_national": 9.29
+    },
+    "solid-hardwood": {
+      "material_per_sqft": 4.05,
+      "labor_per_sqft_national": 5.67,
+      "total_per_sqft_national": 9.72
+    },
+    "tile": {
+      "material_per_sqft": 5.28,
+      "labor_per_sqft_national": 7.79,
+      "total_per_sqft_national": 13.07
+    },
+    "carpet": {
+      "material_per_sqft": 1.94,
+      "labor_per_sqft_national": 2.48,
+      "total_per_sqft_national": 4.42
+    }
+  },
+  "by_state": {
+    "Alabama": {
+      "peel-and-stick-vinyl": 3.08,
+      "luxury-vinyl-plank": 4.29,
+      "laminate": 4.23,
+      "engineered-hardwood": 8.9,
+      "solid-hardwood": 9.08,
+      "tile": 12.2,
+      "carpet": 4.14
+    },
+    "Alaska": {
+      "peel-and-stick-vinyl": 3.37,
+      "luxury-vinyl-plank": 4.72,
+      "laminate": 4.66,
+      "engineered-hardwood": 9.38,
+      "solid-hardwood": 9.85,
+      "tile": 13.26,
+      "carpet": 4.48
+    },
+    "Arizona": {
+      "peel-and-stick-vinyl": 3.33,
+      "luxury-vinyl-plank": 4.67,
+      "laminate": 4.61,
+      "engineered-hardwood": 9.32,
+      "solid-hardwood": 9.76,
+      "tile": 13.13,
+      "carpet": 4.44
+    },
+    "Arkansas": {
+      "peel-and-stick-vinyl": 3.04,
+      "luxury-vinyl-plank": 4.23,
+      "laminate": 4.17,
+      "engineered-hardwood": 8.83,
+      "solid-hardwood": 8.98,
+      "tile": 12.06,
+      "carpet": 4.1
+    },
+    "California": {
+      "peel-and-stick-vinyl": 3.54,
+      "luxury-vinyl-plank": 4.99,
+      "laminate": 4.93,
+      "engineered-hardwood": 9.67,
+      "solid-hardwood": 10.33,
+      "tile": 13.91,
+      "carpet": 4.69
+    },
+    "Colorado": {
+      "peel-and-stick-vinyl": 3.38,
+      "luxury-vinyl-plank": 4.75,
+      "laminate": 4.69,
+      "engineered-hardwood": 9.4,
+      "solid-hardwood": 9.89,
+      "tile": 13.31,
+      "carpet": 4.5
+    },
+    "Connecticut": {
+      "peel-and-stick-vinyl": 3.39,
+      "luxury-vinyl-plank": 4.76,
+      "laminate": 4.7,
+      "engineered-hardwood": 9.42,
+      "solid-hardwood": 9.92,
+      "tile": 13.35,
+      "carpet": 4.51
+    },
+    "Delaware": {
+      "peel-and-stick-vinyl": 3.31,
+      "luxury-vinyl-plank": 4.64,
+      "laminate": 4.58,
+      "engineered-hardwood": 9.29,
+      "solid-hardwood": 9.71,
+      "tile": 13.06,
+      "carpet": 4.41
+    },
+    "District of Columbia": {
+      "peel-and-stick-vinyl": 3.53,
+      "luxury-vinyl-plank": 4.96,
+      "laminate": 4.9,
+      "engineered-hardwood": 9.64,
+      "solid-hardwood": 10.28,
+      "tile": 13.85,
+      "carpet": 4.67
+    },
+    "Florida": {
+      "peel-and-stick-vinyl": 3.39,
+      "luxury-vinyl-plank": 4.76,
+      "laminate": 4.7,
+      "engineered-hardwood": 9.41,
+      "solid-hardwood": 9.91,
+      "tile": 13.34,
+      "carpet": 4.5
+    },
+    "Georgia": {
+      "peel-and-stick-vinyl": 3.24,
+      "luxury-vinyl-plank": 4.53,
+      "laminate": 4.47,
+      "engineered-hardwood": 9.16,
+      "solid-hardwood": 9.51,
+      "tile": 12.78,
+      "carpet": 4.33
+    },
+    "Hawaii": {
+      "peel-and-stick-vinyl": 3.53,
+      "luxury-vinyl-plank": 4.97,
+      "laminate": 4.91,
+      "engineered-hardwood": 9.65,
+      "solid-hardwood": 10.28,
+      "tile": 13.85,
+      "carpet": 4.67
+    },
+    "Idaho": {
+      "peel-and-stick-vinyl": 3.22,
+      "luxury-vinyl-plank": 4.5,
+      "laminate": 4.44,
+      "engineered-hardwood": 9.13,
+      "solid-hardwood": 9.46,
+      "tile": 12.72,
+      "carpet": 4.31
+    },
+    "Illinois": {
+      "peel-and-stick-vinyl": 3.31,
+      "luxury-vinyl-plank": 4.65,
+      "laminate": 4.59,
+      "engineered-hardwood": 9.29,
+      "solid-hardwood": 9.72,
+      "tile": 13.07,
+      "carpet": 4.42
+    },
+    "Indiana": {
+      "peel-and-stick-vinyl": 3.17,
+      "luxury-vinyl-plank": 4.44,
+      "laminate": 4.38,
+      "engineered-hardwood": 9.06,
+      "solid-hardwood": 9.34,
+      "tile": 12.55,
+      "carpet": 4.25
+    },
+    "Iowa": {
+      "peel-and-stick-vinyl": 3.06,
+      "luxury-vinyl-plank": 4.26,
+      "laminate": 4.2,
+      "engineered-hardwood": 8.86,
+      "solid-hardwood": 9.02,
+      "tile": 12.12,
+      "carpet": 4.12
+    },
+    "Kansas": {
+      "peel-and-stick-vinyl": 3.1,
+      "luxury-vinyl-plank": 4.33,
+      "laminate": 4.27,
+      "engineered-hardwood": 8.94,
+      "solid-hardwood": 9.16,
+      "tile": 12.3,
+      "carpet": 4.17
+    },
+    "Kentucky": {
+      "peel-and-stick-vinyl": 3.11,
+      "luxury-vinyl-plank": 4.33,
+      "laminate": 4.27,
+      "engineered-hardwood": 8.94,
+      "solid-hardwood": 9.16,
+      "tile": 12.31,
+      "carpet": 4.18
+    },
+    "Louisiana": {
+      "peel-and-stick-vinyl": 3.06,
+      "luxury-vinyl-plank": 4.27,
+      "laminate": 4.21,
+      "engineered-hardwood": 8.87,
+      "solid-hardwood": 9.05,
+      "tile": 12.15,
+      "carpet": 4.13
+    },
+    "Maine": {
+      "peel-and-stick-vinyl": 3.25,
+      "luxury-vinyl-plank": 4.55,
+      "laminate": 4.49,
+      "engineered-hardwood": 9.19,
+      "solid-hardwood": 9.55,
+      "tile": 12.84,
+      "carpet": 4.35
+    },
+    "Maryland": {
+      "peel-and-stick-vinyl": 3.42,
+      "luxury-vinyl-plank": 4.81,
+      "laminate": 4.75,
+      "engineered-hardwood": 9.47,
+      "solid-hardwood": 10.0,
+      "tile": 13.46,
+      "carpet": 4.54
+    },
+    "Massachusetts": {
+      "peel-and-stick-vinyl": 3.44,
+      "luxury-vinyl-plank": 4.83,
+      "laminate": 4.77,
+      "engineered-hardwood": 9.5,
+      "solid-hardwood": 10.04,
+      "tile": 13.52,
+      "carpet": 4.56
+    },
+    "Michigan": {
+      "peel-and-stick-vinyl": 3.24,
+      "luxury-vinyl-plank": 4.53,
+      "laminate": 4.47,
+      "engineered-hardwood": 9.16,
+      "solid-hardwood": 9.5,
+      "tile": 12.78,
+      "carpet": 4.33
+    },
+    "Minnesota": {
+      "peel-and-stick-vinyl": 3.29,
+      "luxury-vinyl-plank": 4.6,
+      "laminate": 4.54,
+      "engineered-hardwood": 9.24,
+      "solid-hardwood": 9.64,
+      "tile": 12.97,
+      "carpet": 4.39
+    },
+    "Mississippi": {
+      "peel-and-stick-vinyl": 3.04,
+      "luxury-vinyl-plank": 4.23,
+      "laminate": 4.17,
+      "engineered-hardwood": 8.83,
+      "solid-hardwood": 8.98,
+      "tile": 12.06,
+      "carpet": 4.1
+    },
+    "Missouri": {
+      "peel-and-stick-vinyl": 3.12,
+      "luxury-vinyl-plank": 4.36,
+      "laminate": 4.3,
+      "engineered-hardwood": 8.97,
+      "solid-hardwood": 9.2,
+      "tile": 12.36,
+      "carpet": 4.19
+    },
+    "Montana": {
+      "peel-and-stick-vinyl": 3.2,
+      "luxury-vinyl-plank": 4.48,
+      "laminate": 4.42,
+      "engineered-hardwood": 9.1,
+      "solid-hardwood": 9.41,
+      "tile": 12.66,
+      "carpet": 4.29
+    },
+    "Nebraska": {
+      "peel-and-stick-vinyl": 3.11,
+      "luxury-vinyl-plank": 4.33,
+      "laminate": 4.27,
+      "engineered-hardwood": 8.94,
+      "solid-hardwood": 9.16,
+      "tile": 12.3,
+      "carpet": 4.17
+    },
+    "Nevada": {
+      "peel-and-stick-vinyl": 3.32,
+      "luxury-vinyl-plank": 4.65,
+      "laminate": 4.59,
+      "engineered-hardwood": 9.29,
+      "solid-hardwood": 9.72,
+      "tile": 13.07,
+      "carpet": 4.42
+    },
+    "New Hampshire": {
+      "peel-and-stick-vinyl": 3.4,
+      "luxury-vinyl-plank": 4.78,
+      "laminate": 4.72,
+      "engineered-hardwood": 9.44,
+      "solid-hardwood": 9.95,
+      "tile": 13.4,
+      "carpet": 4.52
+    },
+    "New Jersey": {
+      "peel-and-stick-vinyl": 3.5,
+      "luxury-vinyl-plank": 4.93,
+      "laminate": 4.87,
+      "engineered-hardwood": 9.6,
+      "solid-hardwood": 10.22,
+      "tile": 13.76,
+      "carpet": 4.64
+    },
+    "New Mexico": {
+      "peel-and-stick-vinyl": 3.15,
+      "luxury-vinyl-plank": 4.4,
+      "laminate": 4.34,
+      "engineered-hardwood": 9.02,
+      "solid-hardwood": 9.28,
+      "tile": 12.47,
+      "carpet": 4.23
+    },
+    "New York": {
+      "peel-and-stick-vinyl": 3.48,
+      "luxury-vinyl-plank": 4.9,
+      "laminate": 4.84,
+      "engineered-hardwood": 9.57,
+      "solid-hardwood": 10.17,
+      "tile": 13.69,
+      "carpet": 4.62
+    },
+    "North Carolina": {
+      "peel-and-stick-vinyl": 3.19,
+      "luxury-vinyl-plank": 4.47,
+      "laminate": 4.41,
+      "engineered-hardwood": 9.09,
+      "solid-hardwood": 9.4,
+      "tile": 12.63,
+      "carpet": 4.28
+    },
+    "North Dakota": {
+      "peel-and-stick-vinyl": 3.08,
+      "luxury-vinyl-plank": 4.3,
+      "laminate": 4.24,
+      "engineered-hardwood": 8.9,
+      "solid-hardwood": 9.09,
+      "tile": 12.21,
+      "carpet": 4.15
+    },
+    "Ohio": {
+      "peel-and-stick-vinyl": 3.16,
+      "luxury-vinyl-plank": 4.42,
+      "laminate": 4.36,
+      "engineered-hardwood": 9.04,
+      "solid-hardwood": 9.31,
+      "tile": 12.51,
+      "carpet": 4.24
+    },
+    "Oklahoma": {
+      "peel-and-stick-vinyl": 3.06,
+      "luxury-vinyl-plank": 4.26,
+      "laminate": 4.2,
+      "engineered-hardwood": 8.86,
+      "solid-hardwood": 9.03,
+      "tile": 12.13,
+      "carpet": 4.12
+    },
+    "Oregon": {
+      "peel-and-stick-vinyl": 3.39,
+      "luxury-vinyl-plank": 4.76,
+      "laminate": 4.7,
+      "engineered-hardwood": 9.41,
+      "solid-hardwood": 9.91,
+      "tile": 13.34,
+      "carpet": 4.5
+    },
+    "Pennsylvania": {
+      "peel-and-stick-vinyl": 3.26,
+      "luxury-vinyl-plank": 4.57,
+      "laminate": 4.51,
+      "engineered-hardwood": 9.21,
+      "solid-hardwood": 9.58,
+      "tile": 12.88,
+      "carpet": 4.36
+    },
+    "Rhode Island": {
+      "peel-and-stick-vinyl": 3.36,
+      "luxury-vinyl-plank": 4.72,
+      "laminate": 4.66,
+      "engineered-hardwood": 9.37,
+      "solid-hardwood": 9.85,
+      "tile": 13.25,
+      "carpet": 4.48
+    },
+    "South Carolina": {
+      "peel-and-stick-vinyl": 3.18,
+      "luxury-vinyl-plank": 4.45,
+      "laminate": 4.39,
+      "engineered-hardwood": 9.07,
+      "solid-hardwood": 9.36,
+      "tile": 12.59,
+      "carpet": 4.26
+    },
+    "South Dakota": {
+      "peel-and-stick-vinyl": 3.07,
+      "luxury-vinyl-plank": 4.28,
+      "laminate": 4.22,
+      "engineered-hardwood": 8.89,
+      "solid-hardwood": 9.07,
+      "tile": 12.18,
+      "carpet": 4.14
+    },
+    "Tennessee": {
+      "peel-and-stick-vinyl": 3.14,
+      "luxury-vinyl-plank": 4.39,
+      "laminate": 4.33,
+      "engineered-hardwood": 9.0,
+      "solid-hardwood": 9.26,
+      "tile": 12.44,
+      "carpet": 4.22
+    },
+    "Texas": {
+      "peel-and-stick-vinyl": 3.25,
+      "luxury-vinyl-plank": 4.55,
+      "laminate": 4.49,
+      "engineered-hardwood": 9.19,
+      "solid-hardwood": 9.55,
+      "tile": 12.84,
+      "carpet": 4.35
+    },
+    "Utah": {
+      "peel-and-stick-vinyl": 3.29,
+      "luxury-vinyl-plank": 4.61,
+      "laminate": 4.55,
+      "engineered-hardwood": 9.25,
+      "solid-hardwood": 9.65,
+      "tile": 12.98,
+      "carpet": 4.39
+    },
+    "Vermont": {
+      "peel-and-stick-vinyl": 3.27,
+      "luxury-vinyl-plank": 4.58,
+      "laminate": 4.52,
+      "engineered-hardwood": 9.22,
+      "solid-hardwood": 9.6,
+      "tile": 12.91,
+      "carpet": 4.37
+    },
+    "Virginia": {
+      "peel-and-stick-vinyl": 3.34,
+      "luxury-vinyl-plank": 4.68,
+      "laminate": 4.62,
+      "engineered-hardwood": 9.33,
+      "solid-hardwood": 9.78,
+      "tile": 13.16,
+      "carpet": 4.45
+    },
+    "Washington": {
+      "peel-and-stick-vinyl": 3.46,
+      "luxury-vinyl-plank": 4.87,
+      "laminate": 4.81,
+      "engineered-hardwood": 9.54,
+      "solid-hardwood": 10.12,
+      "tile": 13.62,
+      "carpet": 4.59
+    },
+    "West Virginia": {
+      "peel-and-stick-vinyl": 3.09,
+      "luxury-vinyl-plank": 4.31,
+      "laminate": 4.25,
+      "engineered-hardwood": 8.92,
+      "solid-hardwood": 9.12,
+      "tile": 12.25,
+      "carpet": 4.16
+    },
+    "Wisconsin": {
+      "peel-and-stick-vinyl": 3.19,
+      "luxury-vinyl-plank": 4.46,
+      "laminate": 4.4,
+      "engineered-hardwood": 9.08,
+      "solid-hardwood": 9.38,
+      "tile": 12.61,
+      "carpet": 4.27
+    },
+    "Wyoming": {
+      "peel-and-stick-vinyl": 3.16,
+      "luxury-vinyl-plank": 4.42,
+      "laminate": 4.36,
+      "engineered-hardwood": 9.03,
+      "solid-hardwood": 9.3,
+      "tile": 12.5,
+      "carpet": 4.24
+    }
+  },
+  "sources": {
+    "materials": "Amazon Creators API live prices (65th-percentile $/sq-ft, mid-market listings)",
+    "labor": "BLS OEWS, May 2023 (47-2042 Floor Layers), national mean hourly wage",
+    "regional": "BEA Regional Price Parities by State, 2024 (all items, US=100)"
+  }
+}
