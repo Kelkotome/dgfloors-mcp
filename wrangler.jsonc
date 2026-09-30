@@ -11,7 +11,11 @@
   // the dgfloors.com apex is not currently orange-clouded. Wrangler creates the
   // proxied DNS record for mcp.dgfloors.com automatically. MCP endpoint =
   // https://mcp.dgfloors.com  (also responds at /mcp).
+  // Primary endpoint = https://dgfloors.com/mcp (zone routes on the proxied apex, exact paths only
+  // so WP slugs starting with "mcp" are untouched). mcp.dgfloors.com kept as a legacy alias.
   "routes": [
+    { "pattern": "dgfloors.com/mcp", "zone_name": "dgfloors.com" },
+    { "pattern": "dgfloors.com/mcp/", "zone_name": "dgfloors.com" },
     { "pattern": "mcp.dgfloors.com", "custom_domain": true }
   ],
 

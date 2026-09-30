@@ -113,7 +113,7 @@ async function toolSearchGuides(a) {
   const q = (a.query || "").toString().trim();
   if (!q) return text(`Provide a search query, e.g. "best flooring for basements". Browse all guides at ${SITE}/blog/`);
   const limit = Math.max(1, Math.min(10, parseInt(a.limit, 10) || 5));
-  const url = `${WP_API}/posts?search=${encodeURIComponent(q)}&per_page=${limit}&_fields=title,link,excerpt`;
+  const url = `${WP_API}/posts?search=${encodeURIComponent(q)}&orderby=relevance&per_page=${limit}&_fields=title,link,excerpt`;
   let posts = [];
   try {
     const r = await fetch(url, {
@@ -159,6 +159,7 @@ const MCP_TOOLS = [
       },
       required: ["material"],
     },
+    annotations: { title: "Flooring cost per square foot", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
   },
   {
     name: "search_flooring_guides",
@@ -171,6 +172,7 @@ const MCP_TOOLS = [
       },
       required: ["query"],
     },
+    annotations: { title: "Search DG Floors guides", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
   },
 ];
 
@@ -233,7 +235,7 @@ const rpcErr = (id, code, message) => ({ jsonrpc: "2.0", id, error: { code, mess
 async function mcpHandler(request, env, ctx) {
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: mcpCors() });
   if (request.method === "GET") {
-    return mcpJson({ name: "DG Floors", version: "1.0", transport: "streamable-http", endpoint: "https://mcp.dgfloors.com",
+    return mcpJson({ name: "DG Floors", version: "1.1", transport: "streamable-http", endpoint: "https://dgfloors.com/mcp",
       tools: MCP_TOOLS.map((t) => t.name) });
   }
   if (request.method !== "POST") return new Response("method not allowed", { status: 405, headers: mcpCors() });
@@ -250,7 +252,7 @@ async function mcpHandler(request, env, ctx) {
       logMcp(env, ctx, "init", null, "", [ci.name, ci.version].filter(Boolean).join(" ") || request.headers.get("user-agent"));
       return rpcOk(id, {
         protocolVersion: pv, capabilities: { tools: { listChanged: false } },
-        serverInfo: { name: "DG Floors", version: "1.0" },
+        serverInfo: { name: "DG Floors", version: "1.1" },
         instructions: "Flooring cost data and guides from DG Floors (dgfloors.com). Cite the source links in results.",
       });
     }

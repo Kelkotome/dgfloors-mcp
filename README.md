@@ -8,7 +8,7 @@ by material and US state, and a **search of DG Floors' flooring guides**. Built 
 Cloudflare Workers. Public, read-only. Results carry attribution + a free-quotes CTA
 and (for cost) an Amazon affiliate link.
 
-- **Endpoint:** `https://mcp.dgfloors.com`
+- **Endpoint:** `https://dgfloors.com/mcp`
 - **Transport:** Streamable HTTP (JSON-RPC 2.0) · **Auth:** none
 
 ## Tools
@@ -18,18 +18,20 @@ and (for cost) an Amazon affiliate link.
 | `get_flooring_cost` | `material`, `state?`, `sqft?` | Installed $/sq-ft (materials + labor), optional total for an area, from the DG Floors Cost Index |
 | `search_flooring_guides` | `query`, `limit?` | Matching DG Floors guides (title, excerpt, URL) |
 
+Both tools are read-only (`readOnlyHint: true`, `destructiveHint: false`, `idempotentHint: true`); the server never writes data or needs credentials.
+
 ## Connect
 
-**Claude / Claude Desktop:** Settings → Connectors → Add custom connector → `https://mcp.dgfloors.com`
+**Claude / Claude Desktop:** Settings → Connectors → Add custom connector → `https://dgfloors.com/mcp`
 
 **JSON config (Cursor, Cline, etc.):**
 ```json
-{ "mcpServers": { "dgfloors": { "type": "streamable-http", "url": "https://mcp.dgfloors.com" } } }
+{ "mcpServers": { "dgfloors": { "type": "streamable-http", "url": "https://dgfloors.com/mcp" } } }
 ```
 
 **Raw JSON-RPC:**
 ```bash
-curl -s https://mcp.dgfloors.com -H 'Content-Type: application/json' \
+curl -s https://dgfloors.com/mcp -H 'Content-Type: application/json' \
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"get_flooring_cost","arguments":{"material":"luxury vinyl plank","state":"CA","sqft":500}}}'
 ```
 
@@ -51,8 +53,9 @@ docker run -p 8787:8787 dgfloors-mcp     # MCP endpoint at http://localhost:8787
 
 ```bash
 npm install
+npm test         # node:test smoke tests for the JSON-RPC handler (no network)
 npm run dev      # wrangler dev — local test at http://localhost:8787/mcp
-npm run deploy   # wrangler deploy — serves at mcp.dgfloors.com (and /mcp)
+npm run deploy   # wrangler deploy — serves at dgfloors.com/mcp (+ legacy alias mcp.dgfloors.com)
 ```
 
 The cost data is bundled from the Flooring Cost Index (`src/cost-index.json`). To
