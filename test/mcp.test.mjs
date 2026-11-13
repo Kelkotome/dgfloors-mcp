@@ -71,3 +71,10 @@ test("search_flooring_guides uses the FTS index: all words first, then any word"
   assert.match(result.content[0].text, /Basement Flooring & Moisture/);
   assert.match(result.content[0].text, /https:\/\/dgfloors\.com\/basement-flooring\//);
 });
+
+test("answers carry no affiliate or sponsored links (directory rule)", async () => {
+  const { result } = await rpc("tools/call", { name: "get_flooring_cost", arguments: { material: "lvp", state: "TX", sqft: 600 } });
+  const t = result.content[0].text;
+  assert.doesNotMatch(t, /amazon|tag=|free quotes?/i);
+  assert.match(t, /https:\/\/dgfloors\.com\/contact\//);
+});

@@ -3,7 +3,7 @@
  *
  * Exposes dgfloors.com content to AI assistants over the Model Context Protocol
  * (Streamable HTTP, JSON-RPC 2.0). Public, read-only. Every result carries
- * attribution + affiliate/quote CTAs back to dgfloors.com.
+ * attribution and source links back to dgfloors.com (no affiliate or sponsored links).
  *
  * Tools:
  *   get_flooring_cost(material, state?, sqft?)  -> installed $/sqft from the Cost Index
@@ -14,10 +14,9 @@
 import COST from "./cost-index.json";
 
 const SITE = "https://dgfloors.com";
-const QUOTE_URL = `${SITE}/contact/`;
+const CONTACT_URL = `${SITE}/contact/`;
+const CONTACT_LINE = `For more help with your project, or to find a contractor: ${CONTACT_URL}`;
 const INDEX_URL = `${SITE}/flooring-cost-index/`;
-const SHOP_URL = `${SITE}/shop/`;
-const AMZ_TAG = "dgfloors20-20";
 const WP_API = `${SITE}/wp-json/wp/v2`;
 
 // ---- material free-text -> Cost Index key ----------------------------------
@@ -65,8 +64,6 @@ function matchState(input) {
   return null;
 }
 const money = (x) => (typeof x === "number" ? `$${x.toFixed(2)}` : "n/a");
-const amazonLink = (material) =>
-  `https://www.amazon.com/s?k=${encodeURIComponent(material + " flooring")}&tag=${AMZ_TAG}`;
 
 // ---------------------------- tools -----------------------------------------
 function toolGetFlooringCost(a) {
@@ -103,8 +100,7 @@ function toolGetFlooringCost(a) {
     `Source: DG Floors U.S. Flooring Cost Index (${COST.updated}) — ${INDEX_URL}`,
     `Figures are illustrative planning estimates, not quotes.`,
     ``,
-    `→ Get 3 free ${label.toLowerCase()} installation quotes: ${QUOTE_URL}`,
-    `→ Shop ${label.toLowerCase()}: ${amazonLink(a.material)}`
+    CONTACT_LINE
   );
   return text(lines.join("\n"));
 }
@@ -156,7 +152,7 @@ async function toolSearchGuides(a, env) {
     .replace(/&mdash;/g, "—").replace(/&ndash;/g, "–").replace(/&rsquo;/g, "'").replace(/&lsquo;/g, "'");
   const strip = (h) => decodeEntities((h || "").replace(/<[^>]+>/g, "")).replace(/\s+/g, " ").trim();
   if (!Array.isArray(posts) || !posts.length) {
-    return text(`No dgfloors.com guides found for "${q}". Browse all guides: ${SITE}/blog/\n→ Free quotes: ${QUOTE_URL}`);
+    return text(`No dgfloors.com guides found for "${q}". Browse all guides: ${SITE}/blog/\n${CONTACT_LINE}`);
   }
   const blocks = posts.map((p) => {
     const title = strip(p.title && p.title.rendered);
@@ -166,8 +162,8 @@ async function toolSearchGuides(a, env) {
   return text(
     `${posts.length} DG Floors guide(s) for "${q}" (source: dgfloors.com):\n\n` +
     blocks.join("\n\n") +
-    `\n\n→ Compare installed costs by material & state: ${INDEX_URL}` +
-    `\n→ Get 3 free flooring quotes: ${QUOTE_URL}`
+    `\n\nInstalled costs by material and state: ${INDEX_URL}` +
+    `\n${CONTACT_LINE}`
   );
 }
 
