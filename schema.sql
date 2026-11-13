@@ -5,7 +5,9 @@ CREATE TABLE IF NOT EXISTS mcp_calls (
   tool       TEXT,                   -- tool name for calls
   query      TEXT,                   -- main argument (material / query), truncated
   client     TEXT,                   -- clientInfo.name from initialize, or user-agent
+  visitor    TEXT,                   -- salted SHA-256(IP|UA), 16 hex: device counts, no raw IP
   created_at INTEGER NOT NULL        -- unix seconds
 );
 CREATE INDEX IF NOT EXISTS idx_mcp_created ON mcp_calls(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_mcp_tool ON mcp_calls(tool);
+CREATE INDEX IF NOT EXISTS idx_mcp_visitor ON mcp_calls(visitor, created_at);

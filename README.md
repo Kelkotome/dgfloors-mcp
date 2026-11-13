@@ -10,13 +10,14 @@ and (for cost) an Amazon affiliate link.
 
 - **Endpoint:** `https://dgfloors.com/mcp`
 - **Transport:** Streamable HTTP (JSON-RPC 2.0) · **Auth:** none
+- **Docs:** [dgfloors.com/flooring-mcp-server](https://dgfloors.com/flooring-mcp-server/) · [Privacy](https://dgfloors.com/flooring-mcp-server/privacy/) · [Terms](https://dgfloors.com/flooring-mcp-server/terms/)
 
 ## Tools
 
 | Tool | Args | Returns |
 |---|---|---|
 | `get_flooring_cost` | `material`, `state?`, `sqft?` | Installed $/sq-ft (materials + labor), optional total for an area, from the DG Floors Cost Index |
-| `search_flooring_guides` | `query`, `limit?` | Matching DG Floors guides (title, excerpt, URL) |
+| `search_flooring_guides` | `query`, `limit?` | Matching DG Floors guides (title, excerpt, URL) from a full-text index of every published guide |
 
 Both tools are read-only (`readOnlyHint: true`, `destructiveHint: false`, `idempotentHint: true`); the server never writes data or needs credentials.
 
@@ -62,8 +63,15 @@ The cost data is bundled from the Flooring Cost Index (`src/cost-index.json`). T
 refresh: regenerate the index (`flooring_cost_index.py` in the content-ops repo),
 copy `flooring_cost_data/index.json` → `src/cost-index.json`, and redeploy.
 
-Optional usage log: a D1 table (`schema.sql`) records tool calls and client handshakes
-(no personal data). Stats are served at `/stats` behind a `STATS_TOKEN` secret.
+Guide search reads a D1 FTS5 index (`schema_guides.sql`) built from the site's WordPress REST API by
+`build_guides_index.py` (`fetch` writes `data/guides.jsonl`, `sql` writes load files for
+`wrangler d1 execute --remote --file`). Matching tries every query word first, then any word,
+ranked by bm25 with titles weighted highest.
+
+Usage log: a D1 table (`schema.sql`; existing databases apply `migrate_visitor.sql`) records tool
+calls and client handshakes: tool, main argument, client name or user agent, time, and a visitor ID
+that is a salted one-way hash of IP + user agent (no IP is stored). A daily cron deletes rows older
+than 12 months. Stats are served at `/stats` behind a `STATS_TOKEN` secret.
 
 ## License
 

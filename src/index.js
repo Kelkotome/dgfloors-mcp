@@ -7,7 +7,7 @@
  *
  * Tools:
  *   get_flooring_cost(material, state?, sqft?)  -> installed $/sqft from the Cost Index
- *   search_flooring_guides(query, limit?)       -> dgfloors.com article search (WP REST, cached)
+ *   search_flooring_guides(query, limit?)       -> dgfloors.com article search (D1 FTS5 index, WP REST fallback)
  *
  * Protocol handler adapted from the Made Good Designs MCP server.
  */
@@ -109,13 +109,38 @@ function toolGetFlooringCost(a) {
   return text(lines.join("\n"));
 }
 
-async function toolSearchGuides(a) {
+// ---- guide search: D1 FTS5 index (build_guides_index.py) --------------------
+const SEARCH_STOP = new Set(("a an and are as at be by can do does for from how i in is it me my of on or " +
+  "should the to vs what when where which who why will with you your").split(" "));
+function searchTerms(q) {
+  return [...new Set((q.toLowerCase().match(/[a-z0-9]+/g) || []).filter((w) => !SEARCH_STOP.has(w)))].slice(0, 12);
+}
+// Tiers: every word must match → any word (ranked by bm25, title weighted highest). null = index unavailable.
+async function ftsSearch(env, q, limit) {
+  if (!env || !env.DB) return null;
+  const terms = searchTerms(q);
+  if (!terms.length) return [];
+  const sql = "SELECT g.title, g.url AS link, g.excerpt FROM guides_fts f JOIN guides g ON g.id = f.rowid " +
+    "WHERE guides_fts MATCH ? ORDER BY bm25(guides_fts, 10.0, 3.0, 1.0) LIMIT ?";
+  try {
+    for (const op of [" AND ", " OR "]) {
+      const match = terms.map((t) => `"${t}"`).join(op);
+      const rows = (await env.DB.prepare(sql).bind(match, limit).all()).results || [];
+      if (rows.length) return rows.map((r) => ({ title: { rendered: r.title }, link: r.link, excerpt: { rendered: r.excerpt } }));
+      if (terms.length === 1) break;
+    }
+    return [];
+  } catch (_) { return null; }  // table missing or bad MATCH syntax → WP REST fallback
+}
+
+async function toolSearchGuides(a, env) {
   const q = (a.query || "").toString().trim();
   if (!q) return text(`Provide a search query, e.g. "best flooring for basements". Browse all guides at ${SITE}/blog/`);
   const limit = Math.max(1, Math.min(10, parseInt(a.limit, 10) || 5));
-  const url = `${WP_API}/posts?search=${encodeURIComponent(q)}&orderby=relevance&per_page=${limit}&_fields=title,link,excerpt`;
-  let posts = [];
-  try {
+  let posts = await ftsSearch(env, q, limit);
+  if (posts === null) try {
+    posts = [];
+    const url = `${WP_API}/posts?search=${encodeURIComponent(q)}&orderby=relevance&per_page=${limit}&_fields=title,link,excerpt`;
     const r = await fetch(url, {
       headers: { "User-Agent": "curl/8.4.0", "Accept": "application/json" }, // WAF-friendly UA
       cf: { cacheTtl: 600, cacheEverything: true },                          // edge-cache 10 min
@@ -176,26 +201,42 @@ const MCP_TOOLS = [
   },
 ];
 
-async function mcpCallTool(params) {
+async function mcpCallTool(params, env) {
   const name = params.name;
   const a = params.arguments || {};
   if (name === "get_flooring_cost") return toolGetFlooringCost(a);
-  if (name === "search_flooring_guides") return await toolSearchGuides(a);
+  if (name === "search_flooring_guides") return await toolSearchGuides(a, env);
   return { content: [{ type: "text", text: "Unknown tool: " + name }], isError: true };
 }
 const text = (t) => ({ content: [{ type: "text", text: t }] });
 
 // ---------------------------- usage log ------------------------------------
 // Best-effort: runs in ctx.waitUntil and swallows errors, so logging can never slow or break a call.
-function logMcp(env, ctx, kind, tool, query, client) {
+// `visitor` = salted SHA-256 of IP + user-agent (16 hex chars): counts devices without storing the IP.
+async function visitorHash(request, env) {
+  const raw = [request.headers.get("cf-connecting-ip"), request.headers.get("user-agent"), env.STATS_TOKEN].join("|");
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(raw));
+  return [...new Uint8Array(buf)].slice(0, 8).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+function logMcp(env, ctx, request, kind, tool, query, client) {
   if (!env || !env.DB) return;
   const q = String(query || "").slice(0, 200);
   const c = String(client || "").slice(0, 120);
-  const id = crypto.randomUUID();
-  const p = env.DB.prepare("INSERT INTO mcp_calls (id,kind,tool,query,client,created_at) VALUES (?,?,?,?,?,?)")
-    .bind(id, kind, tool || null, q, c, Math.floor(Date.now() / 1000)).run().catch(() => {});
+  const id = crypto.randomUUID(), now = Math.floor(Date.now() / 1000);
+  const p = visitorHash(request, env)
+    .then((v) => env.DB.prepare("INSERT INTO mcp_calls (id,kind,tool,query,client,visitor,created_at) VALUES (?,?,?,?,?,?,?)")
+      .bind(id, kind, tool || null, q, c, v, now).run())
+    // before migrate_visitor.sql has run, the visitor column is missing: keep logging without it
+    .catch(() => env.DB.prepare("INSERT INTO mcp_calls (id,kind,tool,query,client,created_at) VALUES (?,?,?,?,?,?)")
+      .bind(id, kind, tool || null, q, c, now).run())
+    .catch(() => {});
   if (ctx && ctx.waitUntil) ctx.waitUntil(p);
 }
+// Registries, scanners, research probes and our own tests: excluded from device counts.
+const NOISE_CLIENTS = ["mcpregistry", "census", "scanner", "probe", "measurement", "survey", "selftest", "-test",
+  "7maps", "moonglade", "agentry", "curl/", "python-requests", "node-fetch"];
+const NOT_NOISE = NOISE_CLIENTS.map(() => "client NOT LIKE ?").join(" AND ");
+const NOISE_ARGS = NOISE_CLIENTS.map((n) => `%${n}%`);
 
 async function statsHandler(request, env) {
   const token = new URL(request.url).searchParams.get("token") || "";
@@ -211,6 +252,10 @@ async function statsHandler(request, env) {
     by_tool: await all("SELECT tool, COUNT(*) n FROM mcp_calls WHERE kind='call' GROUP BY tool ORDER BY n DESC"),
     by_client: await all("SELECT client, COUNT(*) n FROM mcp_calls GROUP BY client ORDER BY n DESC LIMIT 20"),
     top_queries: await all("SELECT query, COUNT(*) n FROM mcp_calls WHERE kind='call' AND query<>'' GROUP BY query ORDER BY n DESC LIMIT 25"),
+    // real devices = distinct hashed visitors that called a tool, minus registries/scanners/own tests
+    devices: { last_7d: await one(`SELECT COUNT(DISTINCT visitor) n FROM mcp_calls WHERE kind='call' AND visitor IS NOT NULL AND created_at>? AND ${NOT_NOISE}`, now - 7 * day, ...NOISE_ARGS),
+      last_30d: await one(`SELECT COUNT(DISTINCT visitor) n FROM mcp_calls WHERE kind='call' AND visitor IS NOT NULL AND created_at>? AND ${NOT_NOISE}`, now - 30 * day, ...NOISE_ARGS) },
+    real_calls_30d: await one(`SELECT COUNT(*) n FROM mcp_calls WHERE kind='call' AND created_at>? AND ${NOT_NOISE}`, now - 30 * day, ...NOISE_ARGS),
     recent: await all("SELECT kind, tool, query, client, created_at FROM mcp_calls ORDER BY created_at DESC LIMIT 20"),
   });
 }
@@ -249,11 +294,11 @@ async function mcpHandler(request, env, ctx) {
     if (method === "initialize") {
       const pv = (params && params.protocolVersion) || "2025-06-18";
       const ci = (params && params.clientInfo) || {};
-      logMcp(env, ctx, "init", null, "", [ci.name, ci.version].filter(Boolean).join(" ") || request.headers.get("user-agent"));
+      logMcp(env, ctx, request, "init", null, "", [ci.name, ci.version].filter(Boolean).join(" ") || request.headers.get("user-agent"));
       return rpcOk(id, {
         protocolVersion: pv, capabilities: { tools: { listChanged: false } },
         serverInfo: { name: "DG Floors", version: "1.1" },
-        instructions: "Flooring cost data and guides from DG Floors (dgfloors.com). Cite the source links in results.",
+        instructions: "Flooring cost data and guides from DG Floors (dgfloors.com). Each result includes its source link on dgfloors.com.",
       });
     }
     if (typeof method === "string" && method.startsWith("notifications/")) return null;
@@ -261,8 +306,8 @@ async function mcpHandler(request, env, ctx) {
     if (method === "tools/list") return rpcOk(id, { tools: MCP_TOOLS });
     if (method === "tools/call") {
       const p = params || {}, a = p.arguments || {};
-      logMcp(env, ctx, "call", p.name, a.query || a.material || JSON.stringify(a), request.headers.get("user-agent"));
-      try { return rpcOk(id, await mcpCallTool(params || {})); }
+      logMcp(env, ctx, request, "call", p.name, a.query || a.material || JSON.stringify(a), request.headers.get("user-agent"));
+      try { return rpcOk(id, await mcpCallTool(params || {}, env)); }
       catch (e) { return rpcOk(id, { content: [{ type: "text", text: "Error: " + (e && e.message || e) }], isError: true }); }
     }
     return rpcErr(id, -32601, "Method not found: " + method);
@@ -283,5 +328,11 @@ export default {
     if (p === "/" || p === "/mcp" || p === "/mcp/") return mcpHandler(request, env, ctx);
     if (p === "/stats") return statsHandler(request, env);
     return new Response("DG Floors MCP server. POST JSON-RPC to this endpoint.", { status: 404 });
+  },
+  // Daily cron (wrangler.jsonc triggers): delete usage-log rows older than 12 months (privacy policy).
+  async scheduled(event, env, ctx) {
+    if (!env.DB) return;
+    ctx.waitUntil(env.DB.prepare("DELETE FROM mcp_calls WHERE created_at < ?")
+      .bind(Math.floor(Date.now() / 1000) - 365 * 86400).run());
   },
 };

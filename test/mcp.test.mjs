@@ -17,11 +17,11 @@ writeFileSync(tmp, code);
 const worker = (await import(pathToFileURL(tmp).href)).default;
 after(() => rmSync(tmp, { force: true }));
 
-const rpc = async (method, params = {}) => {
+const rpc = async (method, params = {}, env = {}) => {
   const res = await worker.fetch(new Request("https://dgfloors.com/mcp", {
     method: "POST", headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
-  }), {}, { waitUntil() {} });
+  }), env, { waitUntil() {} });
   assert.equal(res.status, 200);
   return res.json();
 };
@@ -52,4 +52,22 @@ test("get_flooring_cost answers from the bundled Cost Index", async () => {
 test("unknown method returns JSON-RPC error", async () => {
   const r = await rpc("does/not/exist");
   assert.equal(r.error.code, -32601);
+});
+
+// Fake D1: records each MATCH expression; the all-words tier finds nothing, the any-word tier finds one guide.
+const fakeDb = (seen) => ({
+  prepare: (sql) => ({
+    bind: (...b) => ({
+      all: async () => { seen.push(b[0]); return { results: / OR /.test(b[0]) ? [{ title: "Basement Flooring &amp; Moisture", link: "https://dgfloors.com/basement-flooring/", excerpt: "Pick a floor that copes with damp." }] : [] }; },
+      run: async () => ({}),
+    }),
+  }),
+});
+
+test("search_flooring_guides uses the FTS index: all words first, then any word", async () => {
+  const seen = [];
+  const { result } = await rpc("tools/call", { name: "search_flooring_guides", arguments: { query: "Best flooring for basements?" } }, { DB: fakeDb(seen) });
+  assert.deepEqual(seen, ['"best" AND "flooring" AND "basements"', '"best" OR "flooring" OR "basements"']);
+  assert.match(result.content[0].text, /Basement Flooring & Moisture/);
+  assert.match(result.content[0].text, /https:\/\/dgfloors\.com\/basement-flooring\//);
 });
